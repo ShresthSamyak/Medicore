@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# MediCore runtime artifacts
+.cache/               # cached code embeddings (regenerated on demand)
+reports/*.json        # generated evaluation reports
+reports/*.csv
+!reports/.gitkeep
+
+# Logs / temp
+*.log
+.DS_Store
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# Secrets (never commit API keys)
+.env
+config.local.yaml
