@@ -1,0 +1,10 @@
+# Core runtime
+requests>=2.31
+PyYAML>=6.0
+numpy>=1.24
+rank-bm25>=0.2.2
+tqdm>=4.65
+
+# Write-up / reporting (PDF + diagram generation)
+reportlab>=4.0
+matplotlib>=3.7

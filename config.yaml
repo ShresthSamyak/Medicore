@@ -1,0 +1,35 @@
+# =========================================================================
+# MediCore — configuration
+#
+# Ollama normally runs locally and needs no API key. The `api_key` field is
+# kept here so the same code can also target a remote / secured Ollama
+# endpoint (e.g. Ollama behind a reverse proxy, Ollama Turbo, or any
+# OpenAI-compatible gateway). Leave it blank for a standard local install.
+# =========================================================================
+
+ollama:
+  base_url: "http://localhost:11434"   # Ollama server URL
+  api_key: ""                          # optional; sent as "Authorization: Bearer <key>" if set
+  llm_model: "qwen2.5:3b"              # chat model used for extraction + assignment
+  embed_model: "nomic-embed-text"      # embedding model for semantic retrieval
+  request_timeout: 600                 # seconds per HTTP request
+  temperature: 0.0                     # deterministic decoding for reproducible coding
+  num_ctx: 8192                        # context window requested from the model
+
+retrieval:
+  use_embeddings: true      # hybrid (BM25 + embeddings). false => BM25-only
+  bm25_top_k: 40            # candidates pulled from BM25 per query
+  embed_top_k: 40           # candidates pulled from embeddings per query
+  final_candidates: 120     # max candidate codes shown to the assignment LLM
+  rrf_k: 60                 # reciprocal-rank-fusion constant
+  billable_only: true       # only allow assignable (leaf/billable) codes
+
+pipeline:
+  extract_concepts: true    # LLM stage 1: abstract the note into codeable concepts
+  max_note_chars: 6000      # truncate extremely long notes before prompting
+
+paths:
+  code_order_file: "data/icd10cm_order_2026.txt"
+  cases_file: "data/icd10_cm_cases.json"
+  cache_dir: ".cache"
+  reports_dir: "reports"
