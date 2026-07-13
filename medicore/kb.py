@@ -79,15 +79,18 @@ class CodeKB:
 
         if verbose:
             print(f"[kb] embedding {len(self.docs)} codes with "
-                  f"'{self.cfg.ollama.embed_model}' (one-time)...")
+                  f"'{self.cfg.ollama.embed_model}' (one-time, batched)...")
+        batch = 256
         vecs: List[List[float]] = []
+        ranges = range(0, len(self.docs), batch)
         try:
             from tqdm import tqdm
-            iterator = tqdm(self.docs, desc="embedding codes")
+            ranges = tqdm(list(ranges), desc="embedding codes (batches)")
         except Exception:
-            iterator = self.docs
-        for d in iterator:
-            vecs.append(client.embed(d, stage="embed_index"))
+            pass
+        for start in ranges:
+            chunk = self.docs[start : start + batch]
+            vecs.extend(client.embed_batch(chunk, stage="embed_index"))
         mat = np.array(vecs, dtype=np.float32)
         norms = np.linalg.norm(mat, axis=1, keepdims=True)
         norms[norms == 0] = 1.0

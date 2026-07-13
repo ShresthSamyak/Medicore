@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -141,6 +141,18 @@ class OllamaClient:
         # Embedding endpoints don't report token counts; log time + a call only.
         self._record(stage, 0, 0, elapsed)
         return vec
+
+    def embed_batch(self, texts: List[str], stage: str = "embed_batch") -> List[List[float]]:
+        """Batched embeddings via the /api/embed endpoint (much faster on CPU)."""
+        payload = {"model": self.cfg.embed_model, "input": texts}
+        t0 = time.time()
+        r = self.session.post(
+            f"{self.base}/api/embed", json=payload, timeout=self.cfg.request_timeout
+        )
+        elapsed = time.time() - t0
+        r.raise_for_status()
+        self._record(stage, 0, 0, elapsed)
+        return r.json().get("embeddings", [])
 
     # -- telemetry helpers -------------------------------------------------
     def total_usage(self) -> Usage:
