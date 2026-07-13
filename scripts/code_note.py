@@ -12,6 +12,12 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Print UTF-8 regardless of the host terminal's code page (Windows cp1252).
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 from medicore.config import load_config
 from medicore.kb import CodeKB
 from medicore.llm import OllamaClient
@@ -47,7 +53,7 @@ def main():
     for a in result.assignments:
         print(f"  {a['code']:<10} {kb.describe(a['code'])}")
         if a.get("reason"):
-            print(f"             ↳ {a['reason']}")
+            print(f"             -> {a['reason']}")
     print(f"\n({result.seconds:.1f}s, {result.usage.total_tokens} tokens)")
 
 
