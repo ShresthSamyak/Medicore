@@ -11,8 +11,10 @@ build/
 dist/
 
 # MediCore runtime artifacts
-.cache/               # cached code embeddings (regenerated on demand)
-reports/*.json        # generated evaluation reports
+# cached code embeddings (large; regenerated on demand)
+.cache/
+# generated evaluation reports
+reports/*.json
 reports/*.csv
 !reports/.gitkeep
 
