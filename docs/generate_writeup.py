@@ -20,8 +20,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm, mm
 from reportlab.platypus import (
-    Flowable, Image, ListFlowable, ListItem, PageBreak, Paragraph,
-    SimpleDocTemplate, Spacer, Table, TableStyle,
+    Flowable, Image, KeepTogether, ListFlowable, ListItem, PageBreak,
+    Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
 )
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -109,18 +109,19 @@ def _fig(name, width_cm, caption, S, ratio=None):
         path = os.path.join(FIG, name)
         if not os.path.exists(path):
             path = os.path.join(HERE, name)
-    out = []
-    if os.path.exists(path):
-        from reportlab.lib.utils import ImageReader
-        iw, ih = ImageReader(path).getSize()
-        w = width_cm * cm
-        h = w * (ih / iw)
-        img = Image(path, width=w, height=h)
-        img.hAlign = "CENTER"
-        out.append(img)
-        if caption:
-            out.append(_p(caption, S["caption"]))
-    return out
+    if not os.path.exists(path):
+        return []
+    from reportlab.lib.utils import ImageReader
+    iw, ih = ImageReader(path).getSize()
+    w = width_cm * cm
+    h = w * (ih / iw)
+    img = Image(path, width=w, height=h)
+    img.hAlign = "CENTER"
+    group = [Spacer(1, 4), img]
+    if caption:
+        group.append(_p(caption, S["caption"]))
+    # Keep image + caption together so they never split across a page.
+    return [KeepTogether(group)]
 
 
 # --------------------------------------------------------------------------- #
@@ -519,7 +520,6 @@ def build(out_path: Optional[str] = None) -> str:
     E += _fig("metrics_bars.png", 12.5, "Figure 3 — Accuracy metrics, micro vs. "
               "macro.", S)
 
-    E.append(PageBreak())
     E.append(_p("6.1 · Where recall is lost", S["h2"]))
     E.append(_p(
         "The single most useful diagnostic is decomposing recall into a retrieval "
