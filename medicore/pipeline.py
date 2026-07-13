@@ -18,8 +18,7 @@ class CodingResult:
     predicted_codes: List[str]
     assignments: List[Dict[str, str]]
     concepts: List[str]
-    n_candidates: int
-    candidate_hit: bool = False        # was the correct set retrievable? (eval-only)
+    candidate_codes: List[str]         # the retrieved candidate pool (for eval ceiling)
     seconds: float = 0.0
     usage: Usage = field(default_factory=Usage)
 
@@ -60,8 +59,7 @@ class CodingPipeline:
             predicted_codes=predicted,
             assignments=assignments,
             concepts=concepts,
-            n_candidates=len(candidates),
+            candidate_codes=[c.code for c in candidates],
             seconds=time.time() - t0,
             usage=self.client.total_usage(),
-            candidate_hit=False,
         )
