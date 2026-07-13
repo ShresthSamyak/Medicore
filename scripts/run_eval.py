@@ -25,12 +25,18 @@ def main():
     ap.add_argument("--limit", type=int, default=0, help="evaluate only first N cases")
     ap.add_argument("--no-embeddings", action="store_true",
                     help="force BM25-only retrieval for this run")
+    ap.add_argument("--model", default=None, help="override the chat model for this run")
+    ap.add_argument("--embed-model", default=None, help="override the embedding model")
     ap.add_argument("--prefix", default="eval", help="report filename prefix")
     args = ap.parse_args()
 
     cfg = load_config(args.config)
     if args.no_embeddings:
         cfg.retrieval.use_embeddings = False
+    if args.model:
+        cfg.ollama.llm_model = args.model
+    if args.embed_model:
+        cfg.ollama.embed_model = args.embed_model
 
     client = OllamaClient(cfg.ollama)
     if not client.is_up():
