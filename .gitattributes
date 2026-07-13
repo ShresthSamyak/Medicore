@@ -1,0 +1,13 @@
+# Treat these as binary: never apply text/EOL conversion (prevents corruption)
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.pkl   binary
+
+# Normalize line endings for source/text files
+*.py    text eol=lf
+*.md    text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.txt   text eol=lf
+*.json  text eol=lf

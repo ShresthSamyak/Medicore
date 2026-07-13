@@ -142,7 +142,7 @@ def save_reports(summary: Summary, reports_dir: str, prefix: str = "eval") -> Di
 def print_summary(summary: Summary) -> None:
     s = summary
     print("\n" + "=" * 60)
-    print(f"  MediCore evaluation — {s.n_cases} cases")
+    print(f"  MediCore evaluation - {s.n_cases} cases")
     print("=" * 60)
     print(f"  Recall     (micro / macro):  {s.micro_recall:.3f} / {s.macro_recall:.3f}")
     print(f"  Precision  (micro / macro):  {s.micro_precision:.3f} / {s.macro_precision:.3f}")
